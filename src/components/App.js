@@ -23,7 +23,7 @@ class App extends React.Component{
 function App(){
     return (
         <Router>
-        <Navigation> </Navigation>
+        <Navigation></Navigation>
         <Switch>
             <Route exact path= "/" component={Home}></Route>
             <Route path="/memory" component={Memory}></Route>
