@@ -9,13 +9,20 @@ import "firebase/firestore";
 //
 //returns a promise holding an array of our score objects
 // game parameter is either memory | snake | minesweeper (collection id)
+// orderby is an array containing sorting instructions
 
-export function fetchLeaderboard(game) {
+export function fetchLeaderboard(game,orderBy) {
     const auth = firebase.auth();
     const db = firebase.firestore();
     return auth
         .signInAnonymously()
-        .then(() => db.collection(game).orderBy("timeMs", "asc").get())
+        .then(() => {
+          let query= db.collection(game);
+          orderBy.forEach(rule =>{
+              query= query.orderBy(...rule);
+          });
+          return query.limit(10).get();
+         })
         .then((querySnapshot) => {
             let leaderboard = [];
             querySnapshot.forEach((doc) => {
@@ -31,7 +38,7 @@ export function fetchLeaderboard(game) {
 /*
 * returns a promise for saving the score
 * */
-export function saveScore(game, score) {
+export function saveScore(game,score) {
     const auth = firebase.auth();
     const db = firebase.firestore();
     return auth

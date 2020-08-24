@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
-import StatusBar from "./StatusBar";
+import StatusBar from "../StatusBar";
 import MemoryCard from "./MemoryCard";
 import * as utils from "../../utils";
-import {fetchLeaderboard} from "../../utils";
+import * as helpers from "../snake/helpers"
+import ResultModal from "../ResultModal";
 
 const colors = [
     "pink",
@@ -76,6 +77,7 @@ function Memory() {
     const [startTime, setStartTime] = useState(0);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [win, setWin] = useState(false);
+    const [showModal,setShowModal]= useState(false);
 
     // useEffect(<effect function>, <dependency array> - optional)
     // <dependency array>:
@@ -89,21 +91,16 @@ function Memory() {
         if (startTime !== 0 && !win) {
             const intervalId = setInterval(() => {
                 setElapsedTime(Date.now() - startTime);
-            }, 1000);
+            }, 100);
             return () => clearInterval(intervalId);
         }
     }, [startTime, win]);
-
+//
     useEffect(() => {
-        if (win){
-            utils.saveScore("memory",{
-                name: "joselyn",
-                timeMs: elapsedTime,
-                })
-                .then(() => console.log("Score Saved"));
-                /// she added new code here check the github
+        if (win) {
+            setShowModal(true);
         }
-    },[win]);
+    }, [win]);
     /*
     Runs every time a card is clicked, flips this card (updates state)
     */
@@ -191,9 +188,7 @@ function Memory() {
     */
     function onRestart() {
         setGame({
-            cards: generateCards(),
-            firstCard: undefined,
-            secondCard: undefined,
+            cards: helpers.generateCards(),
         });
         setStartTime(0);
         setElapsedTime(0);
@@ -216,6 +211,14 @@ function Memory() {
                     />
                 ))}
             </div>
+            <ResultModal
+                show = {showModal }
+                handleClose={() => setShowModal(false)}
+                header = {"congrats"}
+                body = {"woadas"}
+                fetchLeaderBoard= {helpers.fetchLeaderboard}
+                savesScore = {(name) => helpers.saveScore(name,elapsedTime)}
+            > </ResultModal>
         </div>
     );
 }

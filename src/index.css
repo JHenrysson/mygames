@@ -1,9 +1,7 @@
-body{
-    background-image: url("./images/bg.jpg") no-repeat center center fixed;
-    width: 600px;
-    height: 800px;
+body {
+    background-image: url("./images/LF.jpg");
+    margin: auto;
+    height: 900px;
     background-size: cover;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
+
 }

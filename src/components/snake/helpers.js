@@ -1,3 +1,6 @@
+import * as utils from "../../utils";
+
+
 export const width = 20;
 export const height = 12;
 
@@ -49,7 +52,6 @@ Generates new game state depending on the previous game state
 export function tick(oldGame) {
     const oldSnake = oldGame.snake;
     const oldFood = oldGame.food;
-
     const newHead = generateNewHead(oldSnake);
     const newTail = generateNewTail(oldSnake, oldFood, newHead);
     const newSnake = {
@@ -128,4 +130,18 @@ export function isGameOver(game) {
 
 function isOutofBounds(cell) {
     return cell.x < 0 || cell.x >= width || cell.y < 0 || cell.y >= height;
+}
+
+export function fetchLeaderboard(){
+    return utils
+        .fetchLeaderboard("memory",[["timeMs,asc"]])
+        .then((leaderBoard) =>
+            leaderBoard.map(
+                (score,i) => `${i+1}.${score.name}: ${score.timeMs}ms`
+            )
+        );
+}
+
+export function saveScore(name,timeMs){
+    utils.saveScore("memory",{name,timeMs});
 }
